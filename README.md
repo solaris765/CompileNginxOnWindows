@@ -7,4 +7,4 @@ Running this program more then once on a machine would ultimately be pointless s
 an and all optimizations or changes are welcome.
 
 # Running the compiled EXE
-When you finish compiling nginx I suggest replacing an existing nginx exe with it so that the supporting files and folders are in place.
+When you finish compiling nginx I suggest replacing an existing nginx exe with the new one so that the supporting files and folders are in place.
