@@ -5,10 +5,52 @@
 #>
 
 #Must run elevated.
-."D:\ownCloud\PowershellFn\selfElevate.ps1"
+function selfElevate {
+    param (
+    [parameter (Mandatory=$true)]
+    [string]$Script
+    )
+    
+	# Get the ID and security principal of the current user account
+	$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+	$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+	
+	# Get the security principal for the Administrator role
+	$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
+	
+	# Check to see if we are currently running "as Administrator"
+	if ($myWindowsPrincipal.IsInRole($adminRole))
+	{
+		# We are running "as Administrator" - so change the title and background color to indicate this
+		$Host.UI.RawUI.WindowTitle = $Script + "(Elevated)"
+		$Host.UI.RawUI.BackgroundColor = "DarkBlue"
+		clear-host
+	}
+	else
+	{
+		# We are not running "as Administrator" - so relaunch as administrator
+		
+		# Create a new process object that starts PowerShell
+		$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
+		
+		# Specify the current script path and name as a parameter
+		$newProcess.Arguments = $Script;
+		
+		# Indicate that the process should be elevated
+		$newProcess.Verb = "runas";
+		
+		# Start the new process
+		[System.Diagnostics.Process]::Start($newProcess);
+		
+		# Exit from the current, unelevated, process
+		exit
+	}
+	
+	# Run your code that needs to be elevated here
+	Write-Host -NoNewLine "Press any key to continue...`n`n"
+	$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
 selfElevate -Script $myInvocation.MyCommand.Definition
-
-Write-Host -NoNewLine "Press any key to continue..."
 
 #Download Lists
 $PreMinGW = (# MinGW Block
@@ -237,7 +279,7 @@ refreshEnvVars
 $env:Path += (';' + $env:ProgramFiles + '\7-zip')
 
 #Launching MinGW by full Path b/c powershell will need to be restarted before Env Var changes are recognized
-& 'mingw-get.exe' 'install', 'mingw-developer-toolkit'
+& 'mingw-get.exe' 'install', 'mingw-developer-toolkit', 'mingw32-gcc-g++'
 
 #Sets up Msys Directories
 $MsysHome = $MinGWBin + '\msys\1.0\home\' + $env:USERNAME
