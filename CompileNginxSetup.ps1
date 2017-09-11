@@ -6,6 +6,9 @@
 
 #Must run elevated.
 function selfElevate {
+    #Author: https://social.msdn.microsoft.com/profile/Benjamin+Armstrong
+    #Source: https://blogs.msdn.microsoft.com/virtual_pc_guy/2010/09/23/a-self-elevating-powershell-script/
+    #I turned original file into a function
     param (
     [parameter (Mandatory=$true)]
     [string]$Script
