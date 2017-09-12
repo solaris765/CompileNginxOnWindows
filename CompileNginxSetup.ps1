@@ -1,5 +1,5 @@
 ﻿<#
-  Author:  Mason Rhodes
+  Author:  Solaris765
   Version: 0.1
   Purpose: Prepair MinGW env for compiling nginx on windows.
 #>
